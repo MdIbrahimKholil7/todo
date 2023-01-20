@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
-import EditModal from './editModal';
+import EditModal from './EditModal';
+import { useEffect } from 'react';
+import { addReloadTodo, addTodo } from '../features/todoSlice';
+import DeleteModal from './DeleteModal';
 const AllTodo = () => {
     const { todo: { allTodo } } = useSelector(state => state)
     const [openEditModal, setOpenEditModal] = useState(null)
     const [openDeleteModal, setOpenDeleteModal] = useState(null)
-    const [editId, setEditId] = useState(null)
-    const [deleteId, setDeleteId] = useState(null)
+   
+    const dispatch = useDispatch()
+   
+    useEffect(() => {
+        const result = JSON.parse(localStorage.getItem('tdoss'))
+        if (result?.length > 0) {
+
+            dispatch(addReloadTodo(result))
+
+        }
+       
+    }, [])
 
     return (
         <div >
@@ -32,21 +45,26 @@ const AllTodo = () => {
                                     allTodo.map(({ id, todoName }, i) => <tr
                                         key={i}
                                         className=''>
-                                        <th>{id}</th>
+                                        <th>{i+1}</th>
                                         <td className='font-bold text-black'>{todoName}</td>
                                         <td >
-                                            <button
 
-                                                className='flex items-center gap-2 btn btn-sm bg-gray-600 text-white'
+                                            <label
+                                                htmlFor="my-modal-4"
+                                                onClick={() => setOpenEditModal({ id, todoName })}
+                                                className='flex items-center gap-2 btn btn-sm bg-gray-600
+                                                 text-white px-[0px]'
                                             >Edit <AiFillEdit
                                                     className='text-xl font-bold'
-                                                /></button></td>
+                                                /></label></td>
                                         <td>
-                                            <button
+                                            <label
+                                                htmlFor="my-modal-4"
+                                                onClick={() => setOpenDeleteModal(id)}
                                                 className='flex items-center gap-2 btn btn-sm bg-red-600 text-white'
                                             >Delete <AiFillDelete
                                                     className='text-xl font-bold  '
-                                                /></button></td>
+                                                /></label></td>
                                     </tr>)
                                 }
 
@@ -58,7 +76,16 @@ const AllTodo = () => {
                 </div>
             </div>
             {
-                openEditModal && <EditModal />
+                openEditModal && <EditModal
+                    openEditModal={openEditModal}
+                    setOpenEditModal={setOpenEditModal}
+                />
+            }
+            {
+                openDeleteModal && <DeleteModal
+                openDeleteModal={openDeleteModal}
+                setOpenDeleteModal={setOpenDeleteModal}
+                />
             }
         </div>
     );

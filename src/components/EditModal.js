@@ -1,21 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { editTodo } from '../features/todoSlice';
 
-const Modal = () => {
+const EditModal = ({ openEditModal, setOpenEditModal }) => {
+
+    const { todo: { allTodo } } = useSelector(state => state)
+    const dispatch=useDispatch()
+    const { todoName, id } = openEditModal || {}
+    const [value, setValue] = useState(todoName)
+    const updateTodo = (id, name) => {
+
+        dispatch(editTodo({id,name}))
+        setOpenEditModal(null)
+    }
     return (
         <div>
             {/* The button to open modal */}
-            <label htmlFor="my-modal-4" className="btn">open modal</label>
+
 
             {/* Put this part before </body> tag */}
             <input type="checkbox" id="my-modal-4" className="modal-toggle" />
             <label htmlFor="my-modal-4" className="modal cursor-pointer">
                 <label className="modal-box relative" htmlFor="">
-                    <h3 className="text-lg font-bold">Congratulations random Internet user!</h3>
-                    <p className="py-4">You've been selected for a chance to get one year of subscription to use Wikipedia for free!</p>
+                    <div>
+                        <p className='my-5 font-bold capitalize text-xl'>Update your Todo</p>
+                        <input
+                            onChange={e => setValue(e.target.value)}
+                            value={value}
+                            type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+                    </div>
+                    <button onClick={() => updateTodo(id, value)} className='btn bg-green-400 mt-10 '>Save</button>
                 </label>
             </label>
         </div>
     );
 };
 
-export default Modal;
+export default EditModal;
