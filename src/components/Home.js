@@ -1,12 +1,26 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodo } from '../features/todoSlice';
 import AllTodo from './AllTodo';
 
 const Home = () => {
+
+
+    const { todo: { allTodo } } = useSelector(state => state)
+    const dispatch = useDispatch()
+    console.log(allTodo)
+
     const handleForm = (e) => {
-        
+
         e.preventDefault()
-        console.log(e.target.input.value)
+
+        dispatch(addTodo({
+            id: allTodo.length + 1,
+            todoName: e.target.input.value
+        }))
+        e.target.reset()
     }
+
     return (
         <div className='max-w-[600px] mx-auto my-20'>
             <div>

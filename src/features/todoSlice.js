@@ -11,8 +11,7 @@ const todoSlice = createSlice({
     initialState,
     reducers: {
         addTodo: (state, action) => {
-            state.accessToken = action?.payload?.data?.token;
-            state.user = action?.payload?.data?.result;
+            state.allTodo.push(action.payload)
         },
         deleteTodo: (state) => {
             state.accessToken = undefined;
